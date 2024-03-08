@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+    node_remote_feedback_api:
+        build: 
+            context: "./"
+            dockerfile: Dockerfile
+        volumes:
+            - .:/app/
+            - /app/node_modules
+        environment:
+            NODE_ENV: production
+        volumes:
+            - "./:/usr/src/app"
+            - "./.env.production:/.env.production"
+        ports:
+            - 3000:3000
+

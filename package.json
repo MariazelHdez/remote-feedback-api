@@ -1,0 +1,23 @@
+{
+  "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "eslint": "8.30.0", 
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.1"
+  },
+  "name": "Remote-feedback-API",
+  "description": "Remote feedback API | Government of Yukon eServices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MariazelHdez/Find-Employee.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MariazelHdez/Find-Employee/issues"
+  },
+  "homepage": "https://github.com/MariazelHdez/Find-Employee#readme"
+}
