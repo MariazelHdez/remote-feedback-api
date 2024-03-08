@@ -21,7 +21,7 @@ switch (process.env.NODE_ENV) {
 dotenv.config({ path: path });
 
 export const remoteFeedbackRouter = express.Router();
-
+const config_var= process.env;
 
 remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) => {
     try {
@@ -31,6 +31,7 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
          let wasThisPageHelpful = sanitizeHtml( data.was_this_page_helpful);
          var emailOption = '';
          let emailComment = '';
+	 let emailVariable = data.email_variable; 
          if (wasThisPageHelpful === 'Yes') {
              emailOption = 'How did this page help you?';
              emailComment =  sanitizeHtml(data.how_did_this_page_help_you);
@@ -59,18 +60,33 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
             emailContent: emailComment,
             urlFrom : pageUrl
         };
-
+	
         // Render the HTML template using EJS
         const html = ejs.render(emailTemplate, emailData);
-        const emailHost = process.env.SMTP_SERVER;
-        const emailPort: string = process.env.SMTP_PORT!;
-        const emailFrom = process.env.EMAIL_FROM;
-        const nameFrom = process.env.NAME_FROM;
-        const subject = process.env.EMAIL_SUBJECT;
-        const emailTo = process.env.EMAIL_TO;
+        const emailHost = config_var.SMTP_SERVER;
+        const emailPort: string = config_var.SMTP_PORT!;
+        const emailFrom = config_var.EMAIL_FROM;
+        const nameFrom = config_var.NAME_FROM;
+        const subject = config_var.EMAIL_SUBJECT;
+
+	
+        let emailTo = config_var.EMAIL_DEFAULT;
+	if(config_var[emailVariable]){
+		emailTo = config_var[emailVariable];
+	}
+
+
+
+	const emailPass = config_var.SMTP_PASS;
         const selfSignedConfig = {
             host: emailHost,
-            port: parseInt(emailPort)
+            port: parseInt(emailPort),
+	    requireTLS: false,
+            secure: false,
+            auth: {
+                user: emailFrom,
+                pass: emailPass,
+            }
         };
         var transporter = nodemailer.createTransport(selfSignedConfig);
 
@@ -85,6 +101,11 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
         const info = await transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log('Error sending email:', error);
+		 res.send( {
+        	    status: 400,
+                     message: 'Request could not be processed'
+	        });
+
             } else {
                 res.send({ data: 'Sent' });
             }
