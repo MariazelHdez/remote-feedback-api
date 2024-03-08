@@ -107,7 +107,7 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
 	        });
 
             } else {
-                res.send({ data: 'Sent' });
+                res.send({status: 400, data: 'Sent' });
             }
         });
 
@@ -117,6 +117,10 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
 
     } catch (error) {
         console.log(error);
+	 res.send( {
+       	            status: 400,
+                     message: 'Request could not be processed'
+       	        });
     }
 });
 
