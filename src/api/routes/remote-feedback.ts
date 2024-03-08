@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
-import axios from "axios";
 import { body, param } from "express-validator";
-import _ from 'lodash';
 import * as dotenv from "dotenv";
 import nodemailer from "nodemailer";
 
