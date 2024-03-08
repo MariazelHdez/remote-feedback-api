@@ -11,13 +11,13 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MariazelHdez/Find-Employee.git"
+    "url": "git+https://github.com/MariazelHdez/remote-feedback-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MariazelHdez/Find-Employee/issues"
+    "url": "https://github.com/MariazelHdez/remote-feedback-api/issues"
   },
-  "homepage": "https://github.com/MariazelHdez/Find-Employee#readme"
+  "homepage": "https://github.com/MariazelHdez/remote-feedback-api#readme"
 }
