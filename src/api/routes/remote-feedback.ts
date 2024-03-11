@@ -29,7 +29,6 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
         const wasThisPageHelpful = sanitizeHtml(data.was_this_page_helpful);
         let emailOption = '';
         let emailComment = '';
-        let emailVariable = data.email_variable;
 
         if (wasThisPageHelpful === 'Yes') {
             emailOption = 'How did this page help you?';
@@ -57,7 +56,7 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
 
         const mailOptions = {
             from: process.env.EMAIL_FROM,
-            to: emailVariable ? process.env[emailVariable] : process.env.EMAIL_DEFAULT,
+            to: domain ? (process.env[domain] ?  process.env[domain] : process.env.EMAIL_DEFAULT) : process.env.EMAIL_DEFAULT,
             subject: process.env.EMAIL_SUBJECT,
             html: html
         };
