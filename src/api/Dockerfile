@@ -1,4 +1,4 @@
-FROM node:16.14.0-alpine
+FROM node:20.1.0-alpine3.17
 
 
 RUN npm install -g pm2@latest
