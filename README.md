@@ -1,5 +1,7 @@
 # YG Remote feedback API
 
+Generate a API to emit the submission as an HTML-encoded email message and send it to the corresponding program area’s inbox.
+
 ## Development
 
 Before starting the API server, you need to create the appropriate .env file which can be done by running `cp src/api/.env src/api/.env.development`. You must then set the appropriate values
