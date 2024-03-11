@@ -17,8 +17,9 @@ Environment variables should never be checked into the repository!
 - NAME_FROM= (The name that all e-mails will be from.)
 - EMAIL_SUBJECT= (The  e-mail subject.)
 - EMAIL_TO= (The e-mail address that all e-mails will be to.)
-- SMTP_PASS= (The password of the service)
-
+- EMAIL_DEFAULT= (the email to be sent to by default if the domain is not set as constant; don't forget to add this constant)
+- {{domain}}={{email}}
+  - i.e. dev-d-10-modules.pantheonsite.io=mariazel@bizont.ca
 
 ## Building the container image
 

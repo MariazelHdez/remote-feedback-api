@@ -23,7 +23,7 @@ const transporter = nodemailer.createTransport({
 
 export const remoteFeedbackRouter = express.Router();
 
-remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) => {
+remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => {
     try {
         const data = req.body;
         const wasThisPageHelpful = sanitizeHtml(data.was_this_page_helpful);
@@ -38,8 +38,9 @@ remoteFeedbackRouter.post("/feedbackForm", async (req: Request, res: Response) =
             emailComment = sanitizeHtml(data.how_can_we_improve_this_page);
         }
 
-        const pageUrl = data.current_page_url;
-        const domain = data.domain;
+        const pageUrl = data.current_page_url ?  data.current_page_url : '';
+        let domain = data.domain ?  data.domain : '';
+        domain = domain.replace(/\/.*$/, "");
         const submissionTimestamp = data.submission_timestamp;
         const langcode = data.langcode;
 
