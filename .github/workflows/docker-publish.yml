@@ -31,7 +31,7 @@ jobs:
       matrix:
         include:
           - dockerfile: ./Dockerfile
-            image: ghcr.io/ytgov/remote-feedback-api
+            image: ghcr.io/ytgov/feedback-as-a-service-router
     permissions:
       contents: read
       packages: write
