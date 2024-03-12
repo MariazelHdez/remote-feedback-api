@@ -28,7 +28,7 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
         const data = req.body;
 
         // Validate input data
-        if (!data.domain || !data.was_this_page_helpful || !data.submission_timestamp || !data.langcode || !data.current_page_url) {
+        if (!data.domain || !data.was_this_page_helpful || !data.submission_timestamp || !data.current_page_url) {
             return res.status(400).send({ status: 400, message: 'Missing required fields' });
         }
 
@@ -39,11 +39,28 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
 
         const pageUrl = data.current_page_url || '';
         const domain = (data.domain || '').replace(/\/.*$/, "");
-        const submissionTimestamp = data.submission_timestamp;
-        const langcode = data.langcode;
+
+        const submissionTimestamp = new Date(data.submission_timestamp);
+        submissionTimestamp.setUTCHours(submissionTimestamp.getUTCHours() - 7);
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Whitehorse' };
+        const formattedTimestamp = submissionTimestamp.toLocaleString('en-US', options);
+
+        let langcode = data.langcode || 'English';
+        
+        switch (langcode) {
+            case 'en':
+                langcode = 'English';
+                break;
+            case 'fr':
+                langcode = 'French';
+                break;
+            default:
+                langcode = 'English';
+                break;
+        }
 
         const emailData = {
-            submittedOn: submissionTimestamp,
+            submittedOn: formattedTimestamp,
             site: domain,
             lang: langcode,
             emailLabel: emailOption,

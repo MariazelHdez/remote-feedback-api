@@ -8,9 +8,6 @@
         body {
             font-family: Arial, sans-serif;
         }
-        p {
-            margin-bottom: 15px;
-        }
         strong {
             color: #333;
         }
@@ -19,10 +16,9 @@
 <body>
     <main>
         <p><strong>Submitted on:</strong> <%= submittedOn %></p>
-        <p><strong>Submitted from:</strong> <%= site %></p>
         <p><strong>Language:</strong> <%= lang %></p>
-        <p><strong><%= emailLabel %>:</strong> <%= emailContent %></p>
         <p><strong>From page:</strong> <%= urlFrom %></p>
+        <p><strong><%= emailLabel %>:</strong> <%= emailContent %></p>
     </main>
 </body>
 </html>
