@@ -42,7 +42,18 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
 
         const submissionTimestamp = new Date(data.submission_timestamp);
         submissionTimestamp.setUTCHours(submissionTimestamp.getUTCHours() - 7);
-        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'America/Whitehorse' };
+
+        const options: Intl.DateTimeFormatOptions = { 
+            weekday: 'long', 
+            month: 'long', 
+            day: 'numeric', 
+            year: 'numeric', 
+            hour: 'numeric', 
+            minute: 'numeric', 
+            hour12: true, 
+            timeZone: 'America/Whitehorse' 
+        };
+
         const formattedTimestamp = submissionTimestamp.toLocaleString('en-US', options);
 
         let langcode = data.langcode || 'English';
