@@ -26,21 +26,19 @@ export const remoteFeedbackRouter = express.Router();
 remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => {
     try {
         const data = req.body;
-        const wasThisPageHelpful = sanitizeHtml(data.was_this_page_helpful);
-        let emailOption = '';
-        let emailComment = '';
 
-        if (wasThisPageHelpful === 'Yes') {
-            emailOption = 'How did this page help you?';
-            emailComment = sanitizeHtml(data.how_did_this_page_help_you);
-        } else {
-            emailOption = 'How can we improve this page?';
-            emailComment = sanitizeHtml(data.how_can_we_improve_this_page);
+        // Validate input data
+        if (!data.domain || !data.was_this_page_helpful || !data.submission_timestamp || !data.langcode || !data.current_page_url) {
+            return res.status(400).send({ status: 400, message: 'Missing required fields' });
         }
 
-        const pageUrl = data.current_page_url ?  data.current_page_url : '';
-        let domain = data.domain ?  data.domain : '';
-        domain = domain.replace(/\/.*$/, "");
+        const wasThisPageHelpful = sanitizeHtml(data.was_this_page_helpful);
+        const emailOption = wasThisPageHelpful === 'Yes' ? 'How did this page help you?' : 'How can we improve this page?';
+        const emailComment = sanitizeHtml(wasThisPageHelpful === 'Yes' ? data.how_did_this_page_help_you : data.how_can_we_improve_this_page);
+
+
+        const pageUrl = data.current_page_url || '';
+        const domain = (data.domain || '').replace(/\/.*$/, "");
         const submissionTimestamp = data.submission_timestamp;
         const langcode = data.langcode;
 
@@ -54,17 +52,18 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
         };
 
         const html = ejs.render(emailTemplate, emailData);
+        const recipientEmail = domain && process.env[domain] ? process.env[domain] : process.env.EMAIL_DEFAULT;
 
         const mailOptions = {
             from: process.env.EMAIL_FROM,
-            to: domain ? (process.env[domain] ?  process.env[domain] : process.env.EMAIL_DEFAULT) : process.env.EMAIL_DEFAULT,
+            to: recipientEmail,
             subject: process.env.EMAIL_SUBJECT,
             html: html
         };
 
         const info = await transporter.sendMail(mailOptions);
 
-        res.send({ status: 200, data: 'Sent' });
+        res.send({ status: 200, data: 'Feedback sent' });
     } catch (error) {
         console.log('Error sending email:', error);
         res.status(400).send({ status: 400, message: 'Request could not be processed' });
