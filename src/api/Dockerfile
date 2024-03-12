@@ -1,14 +1,36 @@
 FROM node:20.1.0-alpine3.17
 
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont
 
-RUN npm install -g pm2@latest
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
-WORKDIR /usr/src/app
-COPY package.json /usr/src/app/package.json
-RUN npm install
-RUN npm install -g nodemon
+RUN mkdir /home/node/app && chown -R node:node /home/node/app
+
+COPY --chown=node:node package*.json /home/node/app/
+
+RUN npm install -g npm@8.5.5
+USER node
+
+WORKDIR /home/node/app
+RUN npm install && npm cache clean --force --loglevel=error
+COPY --chown=node:node .env* ./
 
 
-COPY ./ ./
+RUN npm install && npm cache clean --force --loglevel=error
+COPY --chown=node:node . /home/node/app/
 
-CMD npm run start
+EXPOSE 3000
+
+WORKDIR /home/node/app
+
+ENV NODE_ENV=development
+RUN npm run start:dev
+
+CMD [ "node", "dist/index.js" ]

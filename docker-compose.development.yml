@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
   api:
@@ -9,13 +9,7 @@ services:
       - ./src/api/.env.development
     environment:
       NODE_ENV: development
-      MAIL_HOST: 'host.docker.internal'
-      TS_NODE_HISTORY: '/tmp/.ts_node_repl_history'
-    tty: true
     ports:
       - '3000:3000'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-      - 'host.docker.internal:172.17.0.1'
     volumes:
-      - ./src/api:/usr/src/api
+      - ./src/api:/home/node/app
