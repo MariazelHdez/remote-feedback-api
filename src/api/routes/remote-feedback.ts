@@ -8,18 +8,6 @@ import sanitizeHtml from 'sanitize-html';
 
 dotenv.config();
 
-const emailTemplate = fs.readFileSync('./template/feedbackEmail.ejs', 'utf-8');
-
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_SERVER,
-    port: parseInt(process.env.SMTP_PORT!),
-    requireTLS: false,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_FROM,
-        pass: process.env.SMTP_PASS,
-    }
-});
 
 export const remoteFeedbackRouter = express.Router();
 // Define the route for sending feedback emails
@@ -43,8 +31,11 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
         const pageUrl = data.current_page_url || '';
         const domain = (data.domain || '').replace(/\/.*$/, "");
 
-        // Convert the submission timestamp to a Date object and adjust the time zone
-        const submissionTimestamp = new Date(data.submission_timestamp);
+        // Check if the submission timestamp is a valid date
+        const submissionTimestamp = data.submission_timestamp && !isNaN(Date.parse(data.submission_timestamp))
+            ? new Date(data.submission_timestamp)
+            : new Date();
+
         submissionTimestamp.setUTCHours(submissionTimestamp.getUTCHours() - 7);
         // Define the options for formatting the timestamp
         const options: Intl.DateTimeFormatOptions = { 
@@ -74,6 +65,18 @@ remoteFeedbackRouter.post("/send-email", async (req: Request, res: Response) => 
                 langcode = 'English';
                 break;
         }
+
+        const emailTemplate = fs.readFileSync('./template/feedbackEmail.ejs', 'utf-8');
+
+        const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_SERVER,
+            port: parseInt(process.env.SMTP_PORT!),
+            requireTLS: false,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_FROM            }
+        });
+
 
         // Prepare the data for the email template
         const emailData = {
